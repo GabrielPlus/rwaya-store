@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///home/pius/rwaya-store/components/ui/product-card.tsx"],"sourcesContent":["\"use client\";\n\nimport { Product } from \"@/types\";\n\ninterface ProductCard {\n    data: Product;\n}\n\nconst ProductCard: React.FC<ProductCard> = (\n    data\n) => {\n    return ( \n        <div className=\"bg-white group cursor-pointer rounded-xl border p-3 space-y-4\">\n           <div className=\"aspect-square rounded-xl bg-gray-100 relative\">\n\n           </div>\n        </div>\n     );\n}\n \nexport default ProductCard;"],"names":[],"mappings":";;;;AAAA;;AAQA,MAAM,cAAqC,CACvC;IAEA,qBACI,8OAAC;QAAI,WAAU;kBACZ,cAAA,8OAAC;YAAI,WAAU;;;;;;;;;;;AAK1B;uCAEe"}},
+    {"offset": {"line": 30, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
+}
