@@ -6,7 +6,7 @@
     "[project]/app/(routes)/products/[productId]/page": [
       "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.4e002217.woff2"
     ],
-    "[project]/app/_not-found/page": [
+    "[project]/app/(routes)/category/[categoryId]/page": [
       "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.4e002217.woff2"
     ]
   },
