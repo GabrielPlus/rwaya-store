@@ -36,7 +36,7 @@ const getProducts = async (query)=>{
             isFeatured: query.isFeatured
         }
     });
-    const res = await fetch(URL);
+    const res = await fetch(url);
     return res.json();
 };
 const __TURBOPACK__default__export__ = getProducts;
