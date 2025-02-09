@@ -106,6 +106,7 @@ const Button = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f
             transistion
             `, className),
         ref: ref,
+        ...props,
         children: children
     }, void 0, false, {
         fileName: "[project]/components/ui/button.tsx",
