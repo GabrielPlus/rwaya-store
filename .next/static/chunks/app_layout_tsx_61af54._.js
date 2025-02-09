@@ -6,8 +6,14 @@
   "path": "static/chunks/app_layout_tsx_61af54._.js",
   "chunks": [
     "static/chunks/[root of the server]__1ff076._.css",
-    "static/chunks/node_modules_b240e9._.js",
-    "static/chunks/_576ef8._.js"
+    "static/chunks/node_modules_next_56f2b0._.js",
+    "static/chunks/node_modules_@clerk_shared_dist_ac85ac._.js",
+    "static/chunks/node_modules_swr_dist_8705bf._.js",
+    "static/chunks/node_modules_@clerk_clerk-react_dist_0b2d16._.js",
+    "static/chunks/node_modules_@headlessui_react_dist_a87c20._.js",
+    "static/chunks/node_modules_1e9068._.js",
+    "static/chunks/_a5cb41._.js",
+    "static/chunks/node_modules_@clerk_nextjs_dist_esm_app-router_cd58e7._.js"
   ],
   "source": "dynamic"
 });
