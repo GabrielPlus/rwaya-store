@@ -7,21 +7,22 @@ interface ProductListProps {
     items: Product[];
 }
 
-const ProductList: React.FC<ProductListProps> = ({ 
-    title, 
-    items 
-}) => {
+const ProductList: React.FC<ProductListProps> = ({ title, items }) => {
   return ( 
     <div className="space-y-4">
       <h3 className="font-bold text-3xl">{title}</h3>
       {items.length === 0 && <NoResults />}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {items.map((item) => (
-             <ProductCard key={item.id} data={item} />
-            ))}
+
+      {/* Horizontal scroll on mobile, grid on larger screens */}
+      <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 scrollbar-hide">
+        {items.map((item) => (
+          <div key={item.id} className="flex-shrink-0 w-64 sm:w-auto">
+            <ProductCard data={item} />
           </div>
+        ))}
+      </div>
     </div>
   );
 }
- 
+
 export default ProductList;

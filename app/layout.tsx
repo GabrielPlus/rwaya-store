@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/navbar"; // Ensure Navbar is correctly imported
 import ModalProvider from "@/providers/modal-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import ToastProvider from "@/providers/toast-provider";
 
 const font = Urbanist({ subsets: ["latin"] });
 
@@ -20,18 +21,17 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-        <html lang="en">
-          <body className={font.className}>
-            <ModalProvider />
+      <html lang="en">
+        <body className={font.className} style={{ margin: 0, padding: 0, height: '100%' }}>
+          <ModalProvider />
+          <ToastProvider />
             <Navbar />
-            <div className="flex">
-              <main className="flex-1">
-                {children}
-              </main>
-            </div>
-            <Footer />
-          </body>
-        </html>
+            <main className="flex-1">
+              {children}
+            </main>
+          <Footer />
+        </body>
+      </html>
     </ClerkProvider>
   );
 }
