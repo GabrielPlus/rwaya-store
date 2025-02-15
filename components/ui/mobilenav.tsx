@@ -1,188 +1,169 @@
 "use client";
 
-import { BookOpen, Briefcase, Home, Inbox, Calendar, Search, Settings } from "lucide-react";
-import { Menu, X } from "lucide-react";
-import IconButton from "./icon-button";
+import * as React from "react";
+import * as FaIcons from "react-icons/fa";
+import * as PiIcons from "react-icons/pi";
+import * as MdIcons from "react-icons/md";
+import * as IoIcons from "react-icons/io";
+import * as Io5Icons from "react-icons/io5";
+import * as RiIcons from "react-icons/ri";
+import * as GiIcons from "react-icons/gi";
+
+import { Button } from "@/components/ui/button2";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
-import { UserButton } from "@clerk/nextjs";
 import { Category } from "@/types";
 
 interface MobileNavProps {
   categories: Category[];
 }
 
+// Combine all icons into one object
+const allIcons = {
+  ...FaIcons,
+  ...RiIcons,
+  ...PiIcons,
+  ...GiIcons,
+  ...MdIcons,
+  ...IoIcons,
+  ...Io5Icons,
+};
+
 const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = React.useState(false);
   const pathname = usePathname();
 
-  const iconMap: Record<string, any> = {
-    "Home": Home,
-    "Inbox": Inbox,
-    "Calendar": Calendar,
-    "Search": Search,
-    "Settings": Settings,
-    "Books": BookOpen,
-    "Business": Briefcase
-  };
-  
-
-  useEffect(() => {
+  React.useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
-  const closeOnCurrent = (href: string) => {
-    if (pathname === href) {
-      setIsOpen(false);
-    }
-  };
+  return (
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
+      <DrawerTrigger asChild>
+        <button
+          type="button"
+          className="lg:hidden relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-900"
+        >
+          ☰ {/* Simple text-based menu icon */}
+        </button>
+      </DrawerTrigger>
 
-  useEffect(() => {
-    if (isOpen) document.body.classList.add("overflow-hidden");
-    else document.body.classList.remove("overflow-hidden");
-  }, [isOpen]);
+      <DrawerContent className="h-1/2 w-full fixed bottom-0 left-0 rounded-t-2xl bg-white shadow-lg">
+        <DrawerHeader className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+          <DrawerTitle>Explore Categories</DrawerTitle>
+          <DrawerClose asChild>
+            <button className="p-2 text-gray-500 rounded-md hover:bg-gray-100">
+              ✖ {/* Simple text-based close icon */}
+            </button>
+          </DrawerClose>
+        </DrawerHeader>
 
-  if (!isOpen)
-    return (
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="lg:hidden relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
-      >
-        <Menu className="h-6 w-6" aria-hidden="true" />
-      </button>
-    );
+        {/* Scrollable content area */}
+        <div className="p-4 flex flex-col gap-4 overflow-y-auto max-h-[70%]">
+          <UserButton />
+          {categories.map((category) => {
+  const iconKey = category.iconvalue as keyof typeof allIcons;
+  const IconComponent = allIcons[iconKey];
 
   return (
-    <div>
-      <div className="relative z-40 lg:hidden">
-        <div className="fixed inset-0 bg-black bg-opacity-25" />
-      </div>
-
-      <div className="fixed inset-0 z-40 flex">
-        <div className="w-4/5 h-full flex flex-col bg-white shadow-xl">
-          <div className="flex px-4 pb-2 pt-5">
-            <div className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400">
-              <IconButton icon={<X size={15} />} onClick={() => setIsOpen(false)} aria-hidden="true" />
-            </div>
-          </div>
-
-          <div className="space-y-6 border-t border-gray-200 px-4 py-6 flex-1 overflow-y-auto">
-            <div className="font-medium text-gray-900">MY RWAYA ACCOUNT</div>
-            <UserButton />
-
-            {categories.map((category) => {
-  const IconComponent = iconMap[category.name] || Search; // Default to Search if no match
-  return (
-    <div key={category.id} className="flow-root">
-      <Link
-        onClick={() => closeOnCurrent(`/category/${category.id}`)}
-        href={`/category/${category.id}`}
-        className="-m-2 flex items-center space-x-2 p-2 font-medium text-gray-900"
-      >
-        <IconComponent className="h-5 w-5" /> {/* Render the icon */}
-        <span>{category.name}</span>
-      </Link>
-    </div>
+    <Link
+      key={category.id}
+      href={`/category/${category.id}`}
+      className="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-100 text-gray-900"
+      onClick={() => setIsOpen(false)}
+    >
+      {IconComponent ? <IconComponent className="h-5 w-5" /> : <span>🚫</span>} {/* Default if no icon */}
+      <span>{category.name}</span>
+    </Link>
   );
 })}
 
-
-          </div>
         </div>
-      </div>
-    </div>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
 export default MobileNav;
 
 
-// 'use client'
 
-// import { Menu, X, Calendar, Home, Inbox, Search, Settings } from 'lucide-react'
-// import IconButton from "./icon-button";
-// import Link from 'next/link'
-// import { usePathname } from 'next/navigation'
-// import { useEffect, useState } from 'react'
-// import { UserButton } from '@clerk/nextjs';
+// "use client";
 
-// const menuItems = [
-//   { title: "Home", url: "#", icon: Home },
-//   { title: "Inbox", url: "#", icon: Inbox },
-//   { title: "Calendar", url: "#", icon: Calendar },
-//   { title: "Search", url: "#", icon: Search },
-//   { title: "Settings", url: "#", icon: Settings },
-// ];
+// import * as React from "react";
+// import { Button } from "@/components/ui/button2";
+// import {
+//   Drawer,
+//   DrawerClose,
+//   DrawerContent,
+//   DrawerHeader,
+//   DrawerTitle,
+//   DrawerTrigger,
+// } from "@/components/ui/drawer";
+// import { UserButton } from "@clerk/nextjs";
+// import Link from "next/link";
+// import { usePathname } from "next/navigation";
+// import { Category } from "@/types";
 
-// const MobileNav = () => {
-//   const [isOpen, setIsOpen] = useState<boolean>(false);
+// interface MobileNavProps {
+//   categories: Category[];
+// }
+
+// const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
+//   const [isOpen, setIsOpen] = React.useState(false);
 //   const pathname = usePathname();
 
-//   useEffect(() => {
+//   React.useEffect(() => {
 //     setIsOpen(false);
 //   }, [pathname]);
 
-//   const closeOnCurrent = (href: string) => {
-//     if (pathname === href) {
-//       setIsOpen(false);
-//     }
-//   };
-
-//   useEffect(() => {
-//     if (isOpen) document.body.classList.add('overflow-hidden');
-//     else document.body.classList.remove('overflow-hidden');
-//   }, [isOpen]);
-
-//   if (!isOpen)
-//     return (
-//       <button
-//         type='button'
-//         onClick={() => setIsOpen(true)}
-//         className='lg:hidden relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400'>
-//         <Menu className='h-6 w-6' aria-hidden='true' />
-//       </button>
-//     );
-
 //   return (
-//     <div>
-//       <div className='relative z-40 lg:hidden'>
-//         <div className='fixed inset-0 bg-black bg-opacity-25' />
-//       </div>
+//     <Drawer open={isOpen} onOpenChange={setIsOpen}>
+//       <DrawerTrigger asChild>
+//         <button
+//           type="button"
+//           className="lg:hidden relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400"
+//         >
+//           ☰ {/* Simple text-based menu icon */}
+//         </button>
+//       </DrawerTrigger>
+      
+//       <DrawerContent className="h-1/2 w-full fixed bottom-0 left-0 rounded-t-2xl bg-white shadow-lg">
+//         <DrawerHeader className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+//           <DrawerTitle>Explore Categories</DrawerTitle>
+//           <DrawerClose asChild>
+//             <button className="p-2 text-gray-500 rounded-md hover:bg-gray-100">
+//               ✖ {/* Simple text-based close icon */}
+//             </button>
+//           </DrawerClose>
+//         </DrawerHeader>
 
-//       <div className='fixed inset-0 z-40 flex'>
-//         <div className='w-4/5 h-full flex flex-col bg-white shadow-xl'>
-//           <div className='flex px-4 pb-2 pt-5'>
-//             <div className="relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400">
-//               <IconButton 
-//                 icon={<X size={15} />} 
-//                 onClick={() => setIsOpen(false)} 
-//                 aria-hidden='true' 
-//               />
-//             </div>
-//           </div>
-          
-//           <div className='space-y-6 border-t border-gray-200 px-4 py-6 flex-1 overflow-y-auto'>
-//             <div className='font-medium text-gray-900'>MY RWAYA ACCOUNT</div>
-//             <UserButton />
+//         {/* Scrollable content area */}
+//         <div className="p-4 flex flex-col gap-4 overflow-y-auto max-h-[70%]">
+//           <UserButton />
 
-//             {menuItems.map((item) => (
-//               <div key={item.title} className='flow-root'>
-//                 <Link
-//                   onClick={() => closeOnCurrent(item.url)}
-//                   href={item.url}
-//                   className='-m-2 flex items-center space-x-2 p-2 font-medium text-gray-900'>
-//                   <item.icon className='w-5 h-5' />
-//                   <span>{item.title}</span>
-//                 </Link>
-//               </div>
-//             ))}
-
-//           </div>
+//           {categories.map((category) => (
+//             <Link
+//               key={category.id}
+//               href={`/category/${category.id}`}
+//               className="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-100 text-gray-900"
+//               onClick={() => setIsOpen(false)}
+//             >
+//               <span>{category.name}</span>
+//             </Link>
+//           ))}
 //         </div>
-//       </div>
-//     </div>
+//       </DrawerContent>
+//     </Drawer>
 //   );
 // };
 

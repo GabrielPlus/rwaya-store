@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
+import Image from "next/image";
 import Container from "@/components/ui/container";
 import useCart from "@/hooks/use-cart";
 import CartItem from "./components/cart-item";
@@ -16,25 +15,30 @@ const CartPage = () => {
                 <div className="px-4 py-16 sm:px-6 lg:px-8">
                     <h1 className="text-3xl font-bold text-black">Shopping Cart</h1>
                     <div className="mt-12 lg:grid lg:grid-cols-12 lg:items-start gap-x-12">
-                    <div className="lg:col-span-7">
-                        {cart.items.length === 0 && <p 
-                        className="text-neutral-500">No Product added to cart</p>    
-                    }
-                    <ul>
-                        {cart.items.map((item) => (
-                            <CartItem
-                                key={item.id}
-                                data={item}
-                            />
-                        ))}
-                    </ul>
-                    </div>
-                    <Summary />
+                        <div className="lg:col-span-7">
+                            {cart.items.length === 0 && (
+                                <div className="flex flex-col items-center text-neutral-500">
+                                    <Image 
+                                        src="/empty-cart.png" 
+                                        alt="Empty Cart"
+                                        width={50} 
+                                        height={50} 
+                                        className="mb-4"
+                                    />
+                                </div>    
+                            )}
+                            <ul>
+                                {cart.items.map((item) => (
+                                    <CartItem key={item.id} data={item} />
+                                ))}
+                            </ul>
+                        </div>
+                        <Summary />
                     </div>
                 </div>
             </Container>
         </div>
-     );
+    );
 }
- 
+
 export default CartPage;
