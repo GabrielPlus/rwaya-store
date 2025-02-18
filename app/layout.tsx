@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar"; // Ensure Navbar is correctly imported
 import ModalProvider from "@/providers/modal-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import ToastProvider from "@/providers/toast-provider";
+import { Analytics } from "@vercel/analytics/react"; // Import Analytics
 
 const font = Urbanist({ subsets: ["latin"] });
 
@@ -25,11 +26,12 @@ export default function RootLayout({
         <body className={font.className} style={{ margin: 0, padding: 0, height: '100%' }}>
           <ModalProvider />
           <ToastProvider />
-            <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
           <Footer />
+          <Analytics /> {/* Add Analytics component here */}
         </body>
       </html>
     </ClerkProvider>
