@@ -9,7 +9,6 @@ import * as Io5Icons from "react-icons/io5";
 import * as RiIcons from "react-icons/ri";
 import * as GiIcons from "react-icons/gi";
 
-import { Button } from "@/components/ui/button2";
 import {
   Drawer,
   DrawerClose,

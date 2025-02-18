@@ -3,7 +3,6 @@ import Container from "./ui/container";
 import MainNav from "@/components/main-nav";
 import getCategories from "@/actions/get-categories";
 import NavbarActions from "./navbar-actions";
-import { UserButton } from "@clerk/nextjs";
 import MobileNav from "./ui/mobilenav";
 
 const revalidate = 0;

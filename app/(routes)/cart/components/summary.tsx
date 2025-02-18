@@ -1,23 +1,12 @@
 "use client";
 
-import axios from "axios";
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { toast } from "react-hot-toast";
-
 import Button from "@/components/ui/button";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
 
 const Summary = () => {
-
-    const searchParams = useSearchParams();
     const items = useCart((state) => state.items);
-    const removeAll = useCart((state) => state.removeAll);
-
-    const totalPrice = items.reduce((total, item) => {
-        return total + Number(item.price);
-    }, 0)
+    const totalPrice = items.reduce((total, item) => total + Number(item.price), 0);
 
     return ( 
         <div className="
@@ -44,10 +33,10 @@ const Summary = () => {
                 </div>
             </div>
             <Button className="w-full mt-6 rounded-full"> 
-            Pay Now
+                Pay Now
             </Button>
         </div>
-     );
+    );
 }
 
 export default Summary;
