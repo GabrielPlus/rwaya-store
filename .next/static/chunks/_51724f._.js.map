@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///home/pius/rwaya-store/components/ui/product-card.tsx"],"sourcesContent":["\"use client\";\n\nimport { Product } from \"@/types\";\nimport Image from \"next/image\";\n\ninterface ProductCardProps {\n    data: Product;\n}\n\nconst ProductCard: React.FC<ProductCardProps> = ({ data }) => {\n    return ( \n        <div className=\"bg-white group cursor-pointer rounded-xl border p-3 space-y-4\">\n           <div className=\"aspect-square rounded-xl bg-gray-100 relative\">\n             <Image\n                src={data.images[0].url}\n                fill\n                alt=\"Product Image\"\n                className=\"aspect-square object-cover rounded-md\"\n              />\n           </div>\n        </div>\n     );\n}\n \nexport default ProductCard;\n"],"names":[],"mappings":";;;;AAGA;AAHA;;;AASA,MAAM,cAA0C,CAAC,EAAE,IAAI,EAAE;IACrD,qBACI,6LAAC;QAAI,WAAU;kBACZ,cAAA,6LAAC;YAAI,WAAU;sBACb,cAAA,6LAAC,gIAAA,CAAA,UAAK;gBACH,KAAK,KAAK,MAAM,CAAC,EAAE,CAAC,GAAG;gBACvB,IAAI;gBACJ,KAAI;gBACJ,WAAU;;;;;;;;;;;;;;;;AAK1B;KAbM;uCAeS"}},
-    {"offset": {"line": 48, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
-}
