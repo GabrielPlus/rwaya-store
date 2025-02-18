@@ -8,10 +8,10 @@ export const revalidate = 0;
 
 const HomePage = async () => {
   const products = await getProducts({ isFeatured: true });
-  const billboards = await getBillboard("11a927c8-ffc9-4493-bc7d-ffd5fa6b3a25");
+  const billboard = await getBillboard("11a927c8-ffc9-4493-bc7d-ffd5fa6b3a25");
 
-  // Handle the case where billboards is null or undefined
-  if (!billboards || billboards.length === 0) {
+  // Handle the case where billboard is null or undefined
+  if (!billboard) {
     return (
       <Container>
         <div className="space-y-10 pb-10">
@@ -23,9 +23,6 @@ const HomePage = async () => {
       </Container>
     );
   }
-
-  // Ensure you pass a single billboard object to the Billboard component
-  const billboard = billboards[0]; // Use the first billboard in the array
 
   return (
     <Container>
@@ -40,7 +37,6 @@ const HomePage = async () => {
 };
 
 export default HomePage;
-
 // import getBillboard from "@/actions/get-billboard";
 // import getProducts from "@/actions/get-products";
 // import Billboard from "@/components/billboard";
