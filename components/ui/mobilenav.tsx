@@ -48,12 +48,12 @@ const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <button
-          type="button"
-          className="lg:hidden relative -m-2 inline-flex items-center justify-center rounded-md p-2 text-gray-900"
-        >
-          ☰ {/* Simple text-based menu icon */}
-        </button>
+      <button
+  type="button"
+  className="lg:hidden relative mr-0.5 -m-4 inline-flex items-center justify-center rounded-md "
+>
+  <span className="bg-gray-200 p-2 rounded-r-full w-14">☰</span> {/* Simple text-based menu icon */}
+</button>
       </DrawerTrigger>
 
       <DrawerContent className="h-1/2 w-full fixed bottom-0 left-0 rounded-t-2xl bg-white shadow-lg">
