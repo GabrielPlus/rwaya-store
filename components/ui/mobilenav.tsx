@@ -68,7 +68,6 @@ const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
 
         {/* Scrollable content area */}
         <div className="p-4 flex flex-col gap-4 overflow-y-auto max-h-[70%]">
-          <UserButton />
           {categories.map((category) => {
   const iconKey = category.iconvalue as keyof typeof allIcons;
   const IconComponent = allIcons[iconKey];

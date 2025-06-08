@@ -7,6 +7,7 @@ import ModalProvider from "@/providers/modal-provider";
 import { ClerkProvider } from "@clerk/nextjs";
 import ToastProvider from "@/providers/toast-provider";
 import { Analytics } from "@vercel/analytics/react"; // Import Analytics
+import NextTopLoader from 'nextjs-toploader';
 
 const font = Urbanist({ subsets: ["latin"] });
 
@@ -24,6 +25,12 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={font.className} style={{ margin: 0, padding: 0, height: '100%' }}>
+        <NextTopLoader
+              color="#3b82f6" // Default blue - change to match your theme
+              height={3}
+              showSpinner={false}
+              shadow="0 0 10px #3b82f6,0 0 5px #3b82f6"
+            />
           <ModalProvider />
           <ToastProvider />
           <Navbar />
