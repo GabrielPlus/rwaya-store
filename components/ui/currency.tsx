@@ -3,31 +3,30 @@
 import { useEffect, useState } from "react";
 
 const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "KES",
-  });
+  style: "currency",
+  currency: "KES",
+});
 
 interface CurrencyProps {
-    value?: string | number;
+  value?: string | number;
 }
 
-const Currency: React.FC<CurrencyProps> = ({
-    value
-}) => {
-    const [isMounted, setIsMounted] = useState(false);
+const Currency: React.FC<CurrencyProps> = ({ value }) => {
+  const [isMounted, setIsMounted] = useState(false);
 
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    if (!isMounted) {
-        return null;
-    }
-    return ( 
-        <div className="font-semibold">
-        {formatter.format(Number(value))}
-        </div>
-     );
-}
- 
+  if (!isMounted) {
+    return null;
+  }
+
+  return (
+    <span className="font-semibold">
+      {formatter.format(Number(value))}
+    </span>
+  );
+};
+
 export default Currency;

@@ -1,6 +1,8 @@
 {
+  "/(routes)/page": "app/(routes)/page.js",
   "/(routes)/cart/page": "app/(routes)/cart/page.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
   "/(routes)/category/[categoryId]/page": "app/(routes)/category/[categoryId]/page.js",
-  "/(routes)/page": "app/(routes)/page.js"
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(routes)/products/[productId]/page": "app/(routes)/products/[productId]/page.js",
+  "/_not-found/page": "app/_not-found/page.js"
 }
