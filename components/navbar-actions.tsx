@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCart } from "lucide-react";
+import { Package, PackageCheck, ShoppingCart } from "lucide-react";
 import Button from "./ui/button";
 import { useEffect, useState } from "react";
 import useCart from "@/hooks/use-cart";
@@ -24,7 +24,12 @@ const NavbarActions = () => {
     
     return ( 
 <div className="ml-auto flex items-center gap-x-4">
-  {/* Cart Button */}
+<Button
+onClick={() => router.push("/orders")}
+  className="flex items-center rounded-full bg-black px-4 py-2"
+  >
+<PackageCheck  size={20} color="white"  />
+  </Button>
   <Button
     onClick={() => router.push("/cart")}
     className="flex items-center rounded-full bg-black px-4 py-2"
@@ -34,9 +39,8 @@ const NavbarActions = () => {
     {cart.getTotalQuantity()}
     </span>
   </Button>
+  {/* <UserButton /> */}
 
-  {/* Clerk User Avatar */}
-  <UserButton />
 </div>
 
      );
