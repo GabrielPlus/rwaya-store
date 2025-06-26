@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle, Package, ArrowRight, Home, Car, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button2';
+import { useRouter } from 'next/navigation';
 
 const PaymentSuccess = () => {
   const [sessionId, setSessionId] = useState('');
+ const router = useRouter();
 
   useEffect(() => {
     // Generate a mock session ID
@@ -19,8 +21,7 @@ const PaymentSuccess = () => {
   }, []);
 
   const handleTrackOrder = () => {
-    // Navigate to order tracking page
-    console.log('Navigating to orders page');
+    router.push('/orders');
   };
 
   const handleContinueShopping = () => {

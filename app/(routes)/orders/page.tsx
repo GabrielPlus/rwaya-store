@@ -1,49 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { useUser } from '@clerk/nextjs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button2';
-import { Input } from '@/components/ui/input';
-import { Package, MapPin, Clock, User, Phone, Mail, CreditCard, ArrowLeft, Truck, CheckCircle, Search, AlertCircle } from 'lucide-react';
-import { getOrderByTracking } from '@/actions/get-orders';
+import { Package, MapPin, Clock, User, Phone, Mail, CreditCard, ArrowLeft, Truck, CheckCircle, Eye, ShoppingBag, Calendar } from 'lucide-react';
+import { getUserOrders, getOrderById } from '@/actions/get-orders';
+import type { Order } from '@/actions/get-orders';
 
-// Types
-interface OrderItem {
-  id: string;
-  quantity: number;
-  product: {
-    id: string;
-    name: string;
-    price: any;
-    images: { url: string }[];
-  };
-}
-
-interface TrackingUpdate {
-  id: string;
-  status: string;
-  location?: string;
-  note?: string;
-  timestamp: Date;
-}
-
-interface Order {
-  id: string;
-  customerName: string;
-  phone: string;
-  address: string;
-  county: string;
-  customerEmail?: string;
-  trackingId?: string;
-  deliveryStatus: string;
-  isPaid: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  orderItems: OrderItem[];
-  trackingUpdates: TrackingUpdate[];
-}
-
+// Helper functions (same as before)
 function formatDate(date: Date | string) {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   return new Intl.DateTimeFormat('en-US', {
@@ -65,6 +31,7 @@ function getStatusColor(status: string) {
     case 'processing':
       return 'bg-yellow-100 text-yellow-800 border-yellow-200';
     case 'order confirmed':
+    case 'order_received':
       return 'bg-purple-100 text-purple-800 border-purple-200';
     default:
       return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -80,47 +47,98 @@ function getStatusIcon(status: string) {
       return <Truck className="h-4 w-4" />;
     case 'processing':
     case 'order confirmed':
+    case 'order_received':
       return <Package className="h-4 w-4" />;
     default:
       return <Clock className="h-4 w-4" />;
   }
 }
 
-const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
-  const [trackingId, setTrackingId] = useState('');
-  const [order, setOrder] = useState<Order | null>(null);
+const OrdersDashboard = ({ storeId }: { storeId: string }) => {
+  const { user, isLoaded } = useUser();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleTrackOrder = async () => {
-    if (!trackingId.trim()) {
-      setError('Please enter a tracking ID');
-      return;
+  // Load user's orders
+  useEffect(() => {
+    if (isLoaded && user?.emailAddresses?.[0]?.emailAddress) {
+      loadUserOrders();
     }
+  }, [isLoaded, user, storeId]);
+
+  const loadUserOrders = async () => {
+    if (!user?.emailAddresses?.[0]?.emailAddress) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      const orderData = await getOrderByTracking(storeId, trackingId.trim());
-      setOrder(orderData);
+      const userOrders = await getUserOrders(storeId, user.emailAddresses[0].emailAddress);
+      setOrders(userOrders);
     } catch (err) {
-      setError('Order not found. Please check your tracking ID and try again.');
-      setOrder(null);
+      setError('Failed to load your orders. Please try again.');
+      console.error('Error loading orders:', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleReset = () => {
-    setOrder(null);
-    setTrackingId('');
+  const handleViewOrder = async (orderId: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const order = await getOrderById(storeId, orderId);
+      setSelectedOrder(order);
+    } catch (err) {
+      setError('Failed to load order details. Please try again.');
+      console.error('Error loading order:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBackToOrders = () => {
+    setSelectedOrder(null);
     setError(null);
   };
 
-  if (order) {
-    // Calculate total price from order items
-    const totalPrice = order.orderItems.reduce((total, item) => {
+  // Loading state
+  if (!isLoaded || loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center justify-center py-12">
+            <div className="text-center">
+              <Package className="h-12 w-12 text-gray-400 mx-auto mb-4 animate-pulse" />
+              <p className="text-gray-600">Loading your orders...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Not authenticated
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center py-12">
+            <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">Please Sign In</h2>
+            <p className="text-gray-600">You need to be signed in to view your orders.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show individual order details
+  if (selectedOrder) {
+    const totalPrice = selectedOrder.orderItems.reduce((total, item) => {
       return total + (item.quantity * Number(item.product.price.toString()));
     }, 0);
 
@@ -131,13 +149,13 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
           <div className="flex items-center gap-4 mb-6">
             <Button 
               variant="outline" 
-              onClick={handleReset}
+              onClick={handleBackToOrders}
               className="flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Track Another Order
+              Back to Orders
             </Button>
-            <h1 className="text-2xl font-bold">Track Your Order</h1>
+            <h1 className="text-2xl font-bold">Order Details</h1>
           </div>
 
           {/* Order Overview */}
@@ -145,7 +163,7 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
-                Order Details
+                Order #{selectedOrder.id.slice(-8)}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -154,26 +172,26 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-gray-500" />
                     <span className="text-sm font-medium">Customer:</span>
-                    <span className="text-sm">{order.customerName}</span>
+                    <span className="text-sm">{selectedOrder.customerName}</span>
                   </div>
                   
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4 text-gray-500" />
                     <span className="text-sm font-medium">Delivery Address:</span>
                   </div>
-                  <p className="text-sm ml-6">{order.address}, {order.county}</p>
+                  <p className="text-sm ml-6">{selectedOrder.address}, {selectedOrder.county}</p>
                   
                   <div className="flex items-center gap-2">
                     <Phone className="h-4 w-4 text-gray-500" />
                     <span className="text-sm font-medium">Phone:</span>
-                    <span className="text-sm">{order.phone}</span>
+                    <span className="text-sm">{selectedOrder.phone}</span>
                   </div>
 
-                  {order.customerEmail && (
+                  {selectedOrder.customerEmail && (
                     <div className="flex items-center gap-2">
                       <Mail className="h-4 w-4 text-gray-500" />
                       <span className="text-sm font-medium">Email:</span>
-                      <span className="text-sm">{order.customerEmail}</span>
+                      <span className="text-sm">{selectedOrder.customerEmail}</span>
                     </div>
                   )}
                 </div>
@@ -185,32 +203,29 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
                     <span className="text-sm font-semibold">KSh {totalPrice.toLocaleString()}</span>
                   </div>
                   
-                  <div className="flex items-center gap-2">
-                    <Truck className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium">Tracking ID:</span>
-                    <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{order.trackingId}</span>
-                  </div>
+                  {selectedOrder.trackingId && (
+                    <div className="flex items-center gap-2">
+                      <Truck className="h-4 w-4 text-gray-500" />
+                      <span className="text-sm font-medium">Tracking ID:</span>
+                      <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">{selectedOrder.trackingId}</span>
+                    </div>
+                  )}
 
                   <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-gray-500" />
-                    <span className="text-sm font-medium">Payment Status:</span>
-                    <Badge variant={order.isPaid ? "default" : "destructive"}>
-                      {order.isPaid ? "Paid" : "Pending"}
-                    </Badge>
+                    <Calendar className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm font-medium">Order Date:</span>
+                    <span className="text-sm">{formatDate(selectedOrder.createdAt)}</span>
                   </div>
                 </div>
               </div>
               
               <div className="flex items-center gap-2 pt-2">
-                <Badge className={getStatusColor(order.deliveryStatus)}>
-                  {getStatusIcon(order.deliveryStatus)}
-                  <span className="ml-1">{order.deliveryStatus}</span>
+                <Badge className={getStatusColor(selectedOrder.deliveryStatus)}>
+                  {getStatusIcon(selectedOrder.deliveryStatus)}
+                  <span className="ml-1">{selectedOrder.deliveryStatus}</span>
                 </Badge>
-                <Badge variant="outline">
-                  Order #{order.id.slice(-6)}
-                </Badge>
-                <Badge variant="outline">
-                  {formatDate(order.createdAt).split(',')[0]}
+                <Badge variant={selectedOrder.isPaid ? "default" : "destructive"}>
+                  {selectedOrder.isPaid ? "Paid" : "Pending"}
                 </Badge>
               </div>
             </CardContent>
@@ -223,7 +238,7 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {order.orderItems.map((item) => (
+                {selectedOrder.orderItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg bg-white">
                     <img
                       src={item.product.images[0]?.url || '/placeholder-image.jpg'}
@@ -259,9 +274,9 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {order.trackingUpdates.length > 0 ? (
+              {selectedOrder.trackingUpdates.length > 0 ? (
                 <div className="space-y-6">
-                  {order.trackingUpdates.map((update, index) => (
+                  {selectedOrder.trackingUpdates.map((update, index) => (
                     <div key={update.id} className="flex gap-4">
                       <div className="flex flex-col items-center">
                         <div className={`w-4 h-4 rounded-full flex items-center justify-center ${
@@ -275,7 +290,7 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
                             <CheckCircle className="h-3 w-3 text-white" />
                           )}
                         </div>
-                        {index < order.trackingUpdates.length - 1 && (
+                        {index < selectedOrder.trackingUpdates.length - 1 && (
                           <div className="w-px h-16 bg-gray-200 mt-2"></div>
                         )}
                       </div>
@@ -313,78 +328,96 @@ const ClientOrderTracking = ({ storeId }: { storeId: string }) => {
     );
   }
 
-  // Tracking ID Input View
+  // Show orders list
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Track Your Order</h1>
-          <p className="text-gray-600">Enter your tracking ID to see your order status</p>
+      <div className="max-w-6xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Orders</h1>
+          <p className="text-gray-600">Track and manage all your orders</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
-              Order Tracking
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-4">
-              <div>
-                <label htmlFor="trackingId" className="block text-sm font-medium text-gray-700 mb-2">
-                  Tracking ID
-                </label>
-                <Input
-                  id="trackingId"
-                  type="text"
-                  placeholder="Enter your tracking ID (e.g., TRK001234567)"
-                  value={trackingId}
-                  onChange={(e) => setTrackingId(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleTrackOrder()}
-                  className="w-full"
-                />
-              </div>
-              
-              {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertCircle className="h-4 w-4 text-red-500" />
-                  <p className="text-sm text-red-700">{error}</p>
-                </div>
-              )}
-
-              <Button 
-                onClick={handleTrackOrder}
-                disabled={loading || !trackingId.trim()}
-                className="w-full"
-              >
-                {loading ? (
-                  <>
-                    <Clock className="h-4 w-4 mr-2 animate-spin" />
-                    Searching...
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-4 w-4 mr-2" />
-                    Track Order
-                  </>
-                )}
+        {error && (
+          <Card className="mb-6 border-red-200 bg-red-50">
+            <CardContent className="pt-6">
+              <p className="text-red-700">{error}</p>
+              <Button onClick={loadUserOrders} className="mt-2" variant="outline">
+                Try Again
               </Button>
-            </div>
+            </CardContent>
+          </Card>
+        )}
 
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <h3 className="text-sm font-medium text-blue-900 mb-2">How to find your tracking ID:</h3>
-              <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Check your order confirmation email</li>
-                <li>• Look for SMS notifications from our delivery team</li>
-                <li>• Contact customer support if you can't find it</li>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+        {orders.length === 0 ? (
+          <Card>
+            <CardContent className="py-12">
+              <div className="text-center">
+                <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
+                <p className="text-gray-600">When you place orders, they'll appear here.</p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {orders.map((order) => {
+              const totalPrice = order.orderItems.reduce((total, item) => {
+                return total + (item.quantity * Number(item.product.price.toString()));
+              }, 0);
+
+              return (
+                <Card key={order.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-4">
+                          <h3 className="font-semibold text-lg">
+                            Order #{order.id.slice(-8)}
+                          </h3>
+                          <Badge className={getStatusColor(order.deliveryStatus)}>
+                            {getStatusIcon(order.deliveryStatus)}
+                            <span className="ml-1">{order.deliveryStatus}</span>
+                          </Badge>
+                        </div>
+                        
+                        <div className="flex items-center gap-6 text-sm text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <Calendar className="h-4 w-4" />
+                            {formatDate(order.createdAt).split(',')[0]}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Package className="h-4 w-4" />
+                            {order.orderItems.length} item{order.orderItems.length !== 1 ? 's' : ''}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <CreditCard className="h-4 w-4" />
+                            KSh {totalPrice.toLocaleString()}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 text-sm">
+                          <MapPin className="h-4 w-4 text-gray-400" />
+                          <span className="text-gray-600">{order.address}, {order.county}</span>
+                        </div>
+                      </div>
+
+                      <Button 
+                        onClick={() => handleViewOrder(order.id)}
+                        className="flex items-center gap-2"
+                      >
+                        <Eye className="h-4 w-4" />
+                        View Details
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default ClientOrderTracking;
+export default OrdersDashboard;
