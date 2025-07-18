@@ -33,10 +33,17 @@ export default function RootLayout({
             />
           <ModalProvider />
           <ToastProvider />
-          <Navbar />
-          <main className="flex-1">
+          
+          {/* Fixed sticky navbar */}
+          <div className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+            <Navbar />
+          </div>
+          
+          {/* Main content with top padding to account for fixed navbar */}
+          <main className="flex-1 pt-16">
             {children}
           </main>
+          
           <Footer />
           <Analytics /> {/* Add Analytics component here */}
         </body>

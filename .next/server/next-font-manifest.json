@@ -3,10 +3,7 @@
     "[project]/app/(routes)/page": [
       "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.b88a81e7.woff2"
     ],
-    "[project]/app/(routes)/category/[categoryId]/page": [
-      "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.b88a81e7.woff2"
-    ],
-    "[project]/app/(routes)/products/[productId]/page": [
+    "[project]/app/(routes)/orders/page": [
       "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.b88a81e7.woff2"
     ],
     "[project]/app/(routes)/cart/page": [
@@ -18,7 +15,10 @@
     "[project]/app/(routes)/thank-you/page": [
       "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.b88a81e7.woff2"
     ],
-    "[project]/app/(routes)/orders/page": [
+    "[project]/app/(routes)/category/[categoryId]/page": [
+      "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.b88a81e7.woff2"
+    ],
+    "[project]/app/(routes)/products/[productId]/page": [
       "static/media/L0x_DF02iFML4hGCyMqlbS1miXK2-s.p.b88a81e7.woff2"
     ]
   },

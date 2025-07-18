@@ -39,7 +39,7 @@ export const getUserOrders = async (
   storeId: string,
   email: string
 ): Promise<Order[]> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/user?email=${encodeURIComponent(email)}`;
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/customer?email=${encodeURIComponent(email)}`;
   
   const res = await fetch(url, {
     method: 'GET',
@@ -73,42 +73,6 @@ export const getOrderById = async (
   orderId: string
 ): Promise<Order> => {
   const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/${orderId}`;
-  
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store'
-  });
-  
-  if (!res.ok) {
-    if (res.status === 404) {
-      throw new Error('Order not found');
-    }
-    throw new Error('Failed to fetch order');
-  }
-
-  const data = await res.json();
-  
-  // Convert date strings back to Date objects
-  return {
-    ...data,
-    createdAt: new Date(data.createdAt),
-    updatedAt: new Date(data.updatedAt),
-    trackingUpdates: data.trackingUpdates.map((update: any) => ({
-      ...update,
-      timestamp: new Date(update.timestamp)
-    }))
-  };
-};
-
-// Keep the existing function for backward compatibility
-export const getOrderByTracking = async (
-  storeId: string,
-  trackingId: string
-): Promise<Order> => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/track?trackingId=${trackingId}`;
   
   const res = await fetch(url, {
     method: 'GET',

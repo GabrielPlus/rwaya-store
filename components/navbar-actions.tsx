@@ -39,7 +39,7 @@ onClick={() => router.push("/orders")}
     {cart.getTotalQuantity()}
     </span>
   </Button>
-  {/* <UserButton /> */}
+  <UserButton />
 
 </div>
 
