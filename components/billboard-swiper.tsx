@@ -80,13 +80,7 @@ const BillboardSwiper: React.FC<BillboardSwiperProps> = ({ billboards }) => {
         </div>
 
         {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-all duration-200"
-        >
-          <ChevronLeft className="w-6 h-6 text-white" />
-        </button>
-        
+
         <button
           onClick={nextSlide}
           className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 transition-all duration-200"

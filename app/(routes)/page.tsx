@@ -10,8 +10,8 @@ const HomePage = async () => {
   const products = await getProducts({ isFeatured: true });
   
   // Fetch two billboards
-  const billboard1 = await getBillboard("7616b8e9-e147-4d30-a83e-22192ff03b84");
-  const billboard2 = await getBillboard("9c8aea9a-d969-4cd7-9221-f03621fc4591"); // Replace with your second billboard ID
+  const billboard1 = await getBillboard("5b5da06a-aa4b-43ea-bba0-81ce5de9dbe0");
+  const billboard2 = await getBillboard("4edd3259-7f9d-495f-b9c9-4bfbdad57345"); // Replace with your second billboard ID
   
   // Filter out any null billboards
   const billboards = [billboard1, billboard2].filter(Boolean);
