@@ -3,39 +3,38 @@
   "middleware": {
     "/": {
       "files": [
-        "server/edge/chunks/_9c5ab4._.js",
-        "server/edge/chunks/[root of the server]__70655b._.js",
-        "server/edge/chunks/edge-wrapper_1e1fb1.js"
+        "server/edge-runtime-webpack.js",
+        "server/middleware.js"
       ],
       "name": "middleware",
       "page": "/",
       "matchers": [
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!_next\\/static|_next\\/image|favicon.ico|.+\\.[\\w]+$).*))(\\\\.json)?[\\/#\\?]?$",
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/((?!_next\\/static|_next\\/image|favicon.ico|.+\\.[\\w]+$).*))(\\.json)?[\\/#\\?]?$",
           "originalSource": "/((?!_next/static|_next/image|favicon.ico|.+\\.[\\w]+$).*)"
         },
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(\\/?index|\\/?index\\\\.json))?[\\/#\\?]?$",
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(\\/?index|\\/?index\\.json))?[\\/#\\?]?$",
           "originalSource": "/"
         },
         {
-          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(api|trpc))(.*)(\\\\.json)?[\\/#\\?]?$",
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?(?:\\/(api|trpc))(.*)(\\.json)?[\\/#\\?]?$",
           "originalSource": "/(api|trpc)(.*)"
         }
       ],
       "wasm": [],
       "assets": [],
       "env": {
-        "__NEXT_BUILD_ID": "development",
-        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "hxNcEkOz/5sPSc6Dt3CNuIpTcy2aYm2R8HJZKpw3wjY=",
-        "__NEXT_PREVIEW_MODE_ID": "deb997033407e463703723b3c58bd855",
-        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "044b47864356adff96f653315a5a9e17387bf37cf1535cf7e967d2392be45d75",
-        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "967709a2236538cd506c43d613b84b85c6f4ea1d7b8de19b8e83bce45daf7ec0"
+        "__NEXT_BUILD_ID": "T2it3P3O06QCXUx3c4s9o",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "0lL6TV1y2Aif4KYybtO7oCpa1GOobS3o1unCFvq4ErE=",
+        "__NEXT_PREVIEW_MODE_ID": "7721b433d94ea9df070526de36498107",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "fabec0d9e16928960d0108efda6651c56f48c50c871cad8df8d25556a52ffba5",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "f17ea8cc50e05d9de0957f2fcf36b6ba931241d1ceef444112edee4324f5da14"
       }
     }
   },
+  "functions": {},
   "sortedMiddleware": [
     "/"
-  ],
-  "functions": {}
+  ]
 }

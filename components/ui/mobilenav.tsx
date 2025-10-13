@@ -1,14 +1,6 @@
 "use client";
 
 import * as React from "react";
-import * as FaIcons from "react-icons/fa";
-import * as PiIcons from "react-icons/pi";
-import * as MdIcons from "react-icons/md";
-import * as IoIcons from "react-icons/io";
-import * as Io5Icons from "react-icons/io5";
-import * as RiIcons from "react-icons/ri";
-import * as GiIcons from "react-icons/gi";
-
 import {
   Drawer,
   DrawerClose,
@@ -21,21 +13,11 @@ import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Category } from "@/types";
+import { ImageIcon } from "@/components/ui/image-icon";
 
 interface MobileNavProps {
   categories: Category[];
 }
-
-// Combine all icons into one object
-const allIcons = {
-  ...FaIcons,
-  ...RiIcons,
-  ...PiIcons,
-  ...GiIcons,
-  ...MdIcons,
-  ...IoIcons,
-  ...Io5Icons,
-};
 
 const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -67,24 +49,27 @@ const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
         </DrawerHeader>
 
         {/* Scrollable content area */}
-        <div className="p-4 flex flex-col gap-4 overflow-y-auto max-h-[70%]">
-          {categories.map((category) => {
-  const iconKey = category.iconvalue as keyof typeof allIcons;
-  const IconComponent = allIcons[iconKey];
-
-  return (
-    <Link
-      key={category.id}
-      href={`/category/${category.id}`}
-      className="flex items-center space-x-3 p-3 rounded-md hover:bg-gray-100 text-gray-900"
-      onClick={() => setIsOpen(false)}
-    >
-      {IconComponent ? <IconComponent className="h-5 w-5" /> : <span>🚫</span>} {/* Default if no icon */}
-      <span>{category.name}</span>
-    </Link>
-  );
-})}
-
+        <div className="p-4 overflow-y-auto max-h-[70%]">
+          {/* Categories Grid - Two rows */}
+          <div className="grid grid-cols-2 gap-4">
+            {categories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/category/${category.id}`}
+                className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-gray-100 text-gray-900 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center overflow-hidden">
+                  <ImageIcon 
+                    imageUrl={category.icon?.imageUrl || ""} 
+                    className="h-12 w-12" 
+                    alt={category.name}
+                  />
+                </div>
+                <span className="text-sm font-medium text-center">{category.name}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </DrawerContent>
     </Drawer>
