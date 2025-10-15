@@ -24,6 +24,16 @@ const MainNav: React.FC<MainNavProps> = ({
         <nav
             className="mx-6 flex items-center space-x-4 lg:spacex-6"
         >
+            {/* Static tabs */}
+            <Link
+                href="/"
+                className={cn(
+                    "text-sm font-medium transition-colors hover:text-black",
+                    pathname === "/" ? "text-black" : "text-neutral-500"
+                )}
+            >
+                Home
+            </Link>
             {routes.map((route) => (
                 <Link
                     key={route.href}

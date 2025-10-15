@@ -6,9 +6,10 @@ import IconButton from "./icon-button";
 import { Expand, ShoppingCart } from "lucide-react";
 import Currency from "./currency";
 import { useRouter } from "next/navigation";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import usePreviewModal from "@/hooks/use-preview-modal";
 import useCart from "@/hooks/use-cart";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProductCardProps {
     data: Product;
@@ -37,14 +38,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
             cart.addItem(data);
         }
 
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     return ( 
-        <div onClick={handleClick} className="bg-white group cursor-pointer rounded-xl border p-3 space-y-4">
-           <div className="aspect-square rounded-xl bg-gray-100 relative">
+        <div onClick={handleClick} className="bg-white group cursor-pointer rounded-xl border p-3 sm:p-4 space-y-3 sm:space-y-4">
+           <div className="aspect-square rounded-xl bg-gray-100 relative overflow-hidden">
+             {!imageLoaded && (
+               <Skeleton className="absolute inset-0 h-full w-full" />
+             )}
              <Image
                 src={data.images[0].url}
                 fill
                 alt="Product Image"
                 className="aspect-square object-cover rounded-md"
+                onLoadingComplete={() => setImageLoaded(true)}
               />
               <div className="opacity-0 group-hover:opacity-100 transition absolute w-full px-6 bottom-5">
                     <div className="flex gap-x-6 justify-center">
@@ -60,15 +67,20 @@ const ProductCard: React.FC<ProductCardProps> = ({
               </div>
            </div>
            <div>
-            <p className="font-semibold text-lg">
-                {data.name}
-            </p>
-            <p className="text-sm text-gray-500"> 
-                {data.category?.name}
-            </p>
+            {imageLoaded ? (
+              <>
+                <p className="font-semibold text-sm sm:text-lg">{data.name}</p>
+                <p className="text-xs sm:text-sm text-gray-500">{data.category?.name}</p>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            )}
            </div>
            <div className="flex items-center">
-            <Currency value={data?.price} />
+            {imageLoaded ? <Currency value={data?.price} /> : <Skeleton className="h-4 w-16" />}
            </div>
         </div>
      );

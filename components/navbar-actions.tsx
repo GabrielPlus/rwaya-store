@@ -1,6 +1,6 @@
 "use client";
 
-import { Package, PackageCheck, ShoppingCart } from "lucide-react";
+import { PackageCheck, ShoppingCart } from "lucide-react";
 import Button from "./ui/button";
 import { useEffect, useState } from "react";
 import useCart from "@/hooks/use-cart";
@@ -23,7 +23,7 @@ const NavbarActions = () => {
     }
     
     return ( 
-<div className="ml-auto flex items-center gap-x-4">
+<div className="ml-auto hidden lg:flex items-center gap-x-4">
 <Button
 onClick={() => router.push("/orders")}
   className="flex items-center rounded-full bg-black px-4 py-2"

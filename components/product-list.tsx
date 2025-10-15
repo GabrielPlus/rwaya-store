@@ -9,14 +9,14 @@ interface ProductListProps {
 
 const ProductList: React.FC<ProductListProps> = ({ title, items }) => {
   return ( 
-    <div className="space-y-4">
-      <h3 className="font-bold text-3xl">{title}</h3>
+    <div className="space-y-3 sm:space-y-4">
+      <h3 className="font-bold text-xl sm:text-3xl">{title}</h3>
       {items.length === 0 && <NoResults />}
 
-      {/* Horizontal scroll on mobile, grid on larger screens */}
-      <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 scrollbar-hide">
+      {/* Two-column grid on mobile, more columns on larger screens */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {items.map((item) => (
-          <div key={item.id} className="flex-shrink-0 w-64 sm:w-auto">
+          <div key={item.id}>
             <ProductCard data={item} />
           </div>
         ))}

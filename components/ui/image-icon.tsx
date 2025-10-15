@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ImageIconProps {
   imageUrl: string;
@@ -20,6 +21,7 @@ export const ImageIcon = React.memo(({
 
   return (
     <div className={`relative ${className}`}>
+      <Skeleton className="absolute inset-0 h-full w-full" />
       <Image
         src={imageUrl}
         alt={alt}

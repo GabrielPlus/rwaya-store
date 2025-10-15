@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -54,28 +54,21 @@ function getStatusIcon(status: string) {
   }
 }
 
-const OrdersDashboard = ({ storeId }: { storeId: string }) => {
+const OrdersDashboard = () => {
   const { user, isLoaded } = useUser();
   const [orders, setOrders] = useState<Order[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Load user's orders
-  useEffect(() => {
-    if (isLoaded && user?.emailAddresses?.[0]?.emailAddress) {
-      loadUserOrders();
-    }
-  }, [isLoaded, user, storeId]);
-
-  const loadUserOrders = async () => {
+  const loadUserOrders = useCallback(async () => {
     if (!user?.emailAddresses?.[0]?.emailAddress) return;
 
     setLoading(true);
     setError(null);
 
     try {
-      const userOrders = await getUserOrders(storeId, user.emailAddresses[0].emailAddress);
+      const userOrders = await getUserOrders("default", user.emailAddresses[0].emailAddress);
       setOrders(userOrders);
     } catch (err) {
       setError('Failed to load your orders. Please try again.');
@@ -83,14 +76,21 @@ const OrdersDashboard = ({ storeId }: { storeId: string }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.emailAddresses]);
+
+  // Load user's orders
+  useEffect(() => {
+    if (isLoaded && user?.emailAddresses?.[0]?.emailAddress) {
+      loadUserOrders();
+    }
+  }, [isLoaded, user, loadUserOrders]);
 
   const handleViewOrder = async (orderId: string) => {
     setLoading(true);
     setError(null);
 
     try {
-      const order = await getOrderById(storeId, orderId);
+      const order = await getOrderById("default", orderId);
       setSelectedOrder(order);
     } catch (err) {
       setError('Failed to load order details. Please try again.');
@@ -240,6 +240,7 @@ const OrdersDashboard = ({ storeId }: { storeId: string }) => {
               <div className="space-y-4">
                 {selectedOrder.orderItems.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 p-4 border rounded-lg bg-white">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={item.product.images[0]?.url || '/placeholder-image.jpg'}
                       alt={item.product.name}
@@ -354,7 +355,7 @@ const OrdersDashboard = ({ storeId }: { storeId: string }) => {
               <div className="text-center">
                 <ShoppingBag className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">No orders yet</h3>
-                <p className="text-gray-600">When you place orders, they'll appear here.</p>
+                <p className="text-gray-600">When you place orders, they&apos;ll appear here.</p>
               </div>
             </CardContent>
           </Card>

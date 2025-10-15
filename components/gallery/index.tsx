@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/carousel";
 import { Image as ImageType } from "@/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface GalleryProps {
   images: ImageType[];
@@ -25,12 +27,17 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
           {images.map((image) => (
             <CarouselItem key={image.id}>
               <div className="p-1">
-                <div className="relative aspect-square">
+                <div className="relative aspect-square overflow-hidden rounded-lg">
+                  <Skeleton className="absolute inset-0 h-full w-full" />
                   <Image
                     fill
                     src={image.url}
                     alt="Product image"
-                    className="object-cover object-center rounded-lg"
+                    className="object-cover object-center"
+                    onLoadingComplete={(img) => {
+                      // hide skeleton on load
+                      (img as any).style.opacity = 1;
+                    }}
                   />
                 </div>
               </div>
@@ -46,7 +53,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
         {isDesktop && (
           <div className="mx-auto mt-6 w-full max-w-2xl lg:max-w-none">
             <div className="grid grid-cols-4 gap-4 px-8">
-              {images.map((image, index) => (
+              {images.map((image) => (
                 <button
                   key={image.id}
                   onClick={() => {} /* You'll need to implement navigation */}

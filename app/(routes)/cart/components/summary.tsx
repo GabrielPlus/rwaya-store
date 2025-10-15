@@ -4,18 +4,17 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Button from "@/components/ui/button";
 import Currency from "@/components/ui/currency";
-import { Label } from "@/components/ui/label"
 import useCart from "@/hooks/use-cart";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { Input } from "@/components/ui/input";
-import { ChevronLeft, ChevronRight, Check, UserPlus, Mail } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserPlus } from "lucide-react";
 
 declare global {
   interface Window {
     PaystackPop: {
-      setup: (options: any) => { openIframe: () => void };
+      setup: (options: Record<string, unknown>) => { openIframe: () => void };
     };
   }
 }
@@ -198,13 +197,6 @@ const Summary = () => {
     });
   };
 
-  const handleSignIn = async () => {
-    localStorage.setItem("pendingCheckout", "true");
-    await openSignIn({
-      redirectUrl: `${window.location.origin}/cart`,
-      afterSignInUrl: `${window.location.origin}/cart`
-    });
-  };
 
   const handlePayment = async (overrideEmail?: string) => {
     if (!user) {
@@ -301,7 +293,7 @@ const Summary = () => {
   return (
     <>
       {/* Main content area */}
-      <div className={`mt-25 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:ml-0 lg:p-8 ${!user ? 'pb-24 lg:pb-8' : 'pb-32 lg:pb-8'}`}>
+      <div className="mt-25 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:ml-0 lg:p-8">
         {/* Order Summary Header */}
         <div className="mb-8">
           <h2 className="text-lg font-medium text-gray-900">Order Summary</h2>
@@ -339,22 +331,7 @@ const Summary = () => {
           </div>
         )}
 
-        {/* Mobile Authentication Message - Only show content, not button */}
-        {!user && (
-          <div className="lg:hidden bg-white rounded-lg p-6 border text-center mb-6">
-            <div className="mb-4">
-              <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-3">
-                <UserPlus className="w-6 h-6 text-blue-600" />
-              </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Create Account to Continue
-              </h3>
-              <p className="text-gray-600 text-sm">
-                To complete your order and track your purchases, please create an account using the button below.
-              </p>
-            </div>
-          </div>
-        )}
+      
 
         {/* Multi-step Form - Only show when user is authenticated */}
         {user && (
@@ -466,35 +443,36 @@ const Summary = () => {
         )}
       </div>
 
-      {/* Mobile Floating Signup Button - Only show when not authenticated */}
+      {/* Mobile Signup Bar - Only show when not authenticated (sticky) */}
       {!user && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 lg:hidden">
-          <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="lg:hidden">
+          <div className="fixed bottom-12 left-0 right-0 z-50 bg-white/80 backdrop-blur-md p-3">
             {/* Order total display */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2">
               <div className="text-sm text-gray-600">
                 Total: <Currency value={totalPrice} />
               </div>
             </div>
-            
-            {/* Floating Signup Button */}
+            {/* Signup Button */}
             <Button
               onClick={handleSignUp}
-              className="w-full bg-black hover:bg-gray-800 text-white font-medium py-4 px-6 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg transform hover:scale-105"
+              className="w-full bg-black hover:bg-gray-800 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2"
             >
-              <UserPlus className="w-5 h-5" />
+              <UserPlus className="w-4 h-4" />
               Create Account & Continue
             </Button>
           </div>
+          {/* Spacer to avoid content underlap */}
+          <div className="h-24" />
         </div>
       )}
 
-      {/* Mobile Navigation - Only show when authenticated */}
+      {/* Mobile Navigation - Only show when authenticated (sticky) */}
       {user && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50 lg:hidden">
-          <div className="max-w-7xl mx-auto px-4 py-4">
+        <div className="lg:hidden">
+          <div className="fixed bottom-12 left-0 right-0 z-50 bg-white/80 backdrop-blur-md p-3">
             {/* Order total display */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-2">
               <div className="text-sm text-gray-600">
                 Total: <Currency value={totalPrice} />
               </div>
@@ -502,23 +480,21 @@ const Summary = () => {
                 Step {currentStep + 1} of {totalSteps}
               </div>
             </div>
-            
             {/* Navigation buttons */}
             <div className="flex gap-3">
               <Button
                 onClick={handlePrevious}
                 disabled={currentStep === 0}
-                className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                className="flex items-center justify-center gap-2 px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed flex-1 text-sm"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Previous
               </Button>
-
               {currentStep < totalSteps - 1 ? (
                 <Button
                   onClick={handleNext}
                   disabled={!isCurrentStepValid()}
-                  className="flex items-center justify-center gap-2 px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                  className="flex items-center justify-center gap-2 px-4 py-3 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed flex-1 text-sm"
                 >
                   Next
                   <ChevronRight className="w-4 h-4" />
@@ -527,7 +503,7 @@ const Summary = () => {
                 <Button
                   disabled={items.length === 0 || loading || !isCurrentStepValid()}
                   onClick={() => handlePayment()}
-                  className="px-4 py-3 bg-black hover:bg-gray-800 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-1"
+                  className="px-4 py-3 bg-black hover:bg-gray-800 text-white rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex-1 text-sm"
                 >
                   {loading ? (
                     <>
@@ -559,6 +535,8 @@ const Summary = () => {
               )}
             </div>
           </div>
+          {/* Spacer to avoid content underlap */}
+          <div className="h-28" />
         </div>
       )}
     </>

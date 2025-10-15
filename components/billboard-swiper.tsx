@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Billboard } from "@/types";
 
 interface BillboardSwiperProps {
@@ -26,9 +28,6 @@ const BillboardSwiper: React.FC<BillboardSwiperProps> = ({ billboards }) => {
     setCurrentSlide((prev) => (prev + 1) % billboards.length);
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + billboards.length) % billboards.length);
-  };
 
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
@@ -41,39 +40,28 @@ const BillboardSwiper: React.FC<BillboardSwiperProps> = ({ billboards }) => {
   // If only one billboard, render it without swiper functionality
   if (billboards.length === 1) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8 rounded-xl overflow-hidden">
-        <div
-          style={{ backgroundImage: `url(${billboards[0]?.imageUrl})` }}
-          className="rounded-xl relative aspect-square md:aspect-[2.4/1] overflow-hidden bg-cover"
-        >
-          <div className="h-full w-full flex flex-col justify-center items-center text-center gap-y-8">
-            <div className="font-bold text-3xl sm:text-5xl lg:text-6xl sm:max-w-xl max-w-xs">
-              {billboards[0].label}
-            </div>
-          </div>
+      <div className="p-2 sm:p-6 lg:p-8 rounded-xl overflow-hidden">
+        <div className="rounded-xl relative aspect-[3/2] md:aspect-[2.4/1] overflow-hidden bg-gray-100">
+          <Skeleton className="absolute inset-0 h-full w-full" />
+          <Image src={billboards[0]?.imageUrl} alt="Billboard" fill className="object-cover" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative p-4 sm:p-6 lg:p-8 rounded-xl overflow-hidden">
-      <div className="relative aspect-square md:aspect-[2.4/1] overflow-hidden rounded-xl">
+    <div className="relative p-2 sm:p-6 lg:p-8 rounded-xl overflow-hidden">
+      <div className="relative aspect-[3/2] md:aspect-[2.4/1] overflow-hidden rounded-xl">
         {/* Slides */}
         <div
           className="flex transition-transform duration-500 ease-in-out h-full"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
-          {billboards.map((billboard, index) => (
-            <div
-              key={billboard.id}
-              className="w-full flex-shrink-0 relative bg-cover bg-center"
-              style={{ backgroundImage: `url(${billboard.imageUrl})` }}
-            >
-              <div className="h-full w-full flex flex-col justify-center items-center text-center gap-y-8">
-                <div className="font-bold text-3xl sm:text-5xl lg:text-6xl sm:max-w-xl max-w-xs text-white drop-shadow-lg">
-                  {billboard.label}
-                </div>
+          {billboards.map((billboard) => (
+            <div key={billboard.id} className="w-full flex-shrink-0 relative">
+              <div className="relative h-full w-full aspect-[3/2] md:aspect-[2.4/1]">
+                <Skeleton className="absolute inset-0 h-full w-full" />
+                <Image src={billboard.imageUrl} alt="Billboard" fill className="object-cover" />
               </div>
             </div>
           ))}
@@ -90,12 +78,12 @@ const BillboardSwiper: React.FC<BillboardSwiperProps> = ({ billboards }) => {
 
         {/* Dots Indicator */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-          {billboards.map((_, index) => (
+          {billboards.map((_, dotIndex) => (
             <button
-              key={index}
-              onClick={() => goToSlide(index)}
+              key={dotIndex}
+              onClick={() => goToSlide(dotIndex)}
               className={`w-3 h-3 rounded-full transition-all duration-200 ${
-                index === currentSlide
+                dotIndex === currentSlide
                   ? "bg-white"
                   : "bg-white/50 hover:bg-white/70"
               }`}

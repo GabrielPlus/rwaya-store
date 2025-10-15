@@ -9,7 +9,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { UserButton } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Category } from "@/types";
@@ -38,7 +37,9 @@ const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
 </button>
       </DrawerTrigger>
 
-      <DrawerContent className="h-1/2 w-full fixed bottom-0 left-0 rounded-t-2xl bg-white shadow-lg">
+      {/* Removed separate Shop trigger; bottom nav handles Shop */}
+
+      <DrawerContent className="h-2/3 w-full fixed bottom-0 left-0 rounded-t-2xl bg-white shadow-lg">
         <DrawerHeader className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
           <DrawerTitle>Explore Categories</DrawerTitle>
           <DrawerClose asChild>
@@ -49,24 +50,24 @@ const MobileNav: React.FC<MobileNavProps> = ({ categories }) => {
         </DrawerHeader>
 
         {/* Scrollable content area */}
-        <div className="p-4 overflow-y-auto max-h-[70%]">
-          {/* Categories Grid - Two rows */}
-          <div className="grid grid-cols-2 gap-4">
+        <div className="p-4 overflow-y-auto max-h-[80%]">
+          {/* Categories Grid - Three rows */}
+          <div className="grid grid-cols-3 gap-3">
             {categories.map((category) => (
               <Link
                 key={category.id}
                 href={`/category/${category.id}`}
-                className="flex flex-col items-center space-y-2 p-4 rounded-lg hover:bg-gray-100 text-gray-900 transition-colors"
+                className="flex flex-col items-center space-y-2 p-3 rounded-lg hover:bg-gray-100 text-gray-900 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                <div className="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 rounded-full bg-gray-50 flex items-center justify-center overflow-hidden">
                   <ImageIcon 
                     imageUrl={category.icon?.imageUrl || ""} 
-                    className="h-12 w-12" 
+                    className="h-10 w-10" 
                     alt={category.name}
                   />
                 </div>
-                <span className="text-sm font-medium text-center">{category.name}</span>
+                <span className="text-xs font-medium text-center">{category.name}</span>
               </Link>
             ))}
           </div>
