@@ -254,7 +254,7 @@ const Summary = () => {
           ref: response.data.reference,
           currency: "KES",
           callback: () => {
-            window.location.href = `${window.location.origin}/thank-you?session=${response.data.reference}`;
+            window.location.href = `${window.location.origin}/thank-you?session=${response.data.reference}&success=1`;
           },
           onClose: () => {
             window.location.href = `${window.location.origin}/cart?canceled=1`;

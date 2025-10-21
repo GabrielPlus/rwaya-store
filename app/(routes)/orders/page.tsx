@@ -368,10 +368,10 @@ const OrdersDashboard = () => {
 
               return (
                 <Card key={order.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="space-y-4">
                       <div className="space-y-2">
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                           <h3 className="font-semibold text-lg">
                             Order #{order.id.slice(-8)}
                           </h3>
@@ -381,7 +381,7 @@ const OrdersDashboard = () => {
                           </Badge>
                         </div>
                         
-                        <div className="flex items-center gap-6 text-sm text-gray-600">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 text-sm text-gray-600">
                           <div className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
                             {formatDate(order.createdAt).split(',')[0]}
@@ -402,13 +402,15 @@ const OrdersDashboard = () => {
                         </div>
                       </div>
 
-                      <Button 
-                        onClick={() => handleViewOrder(order.id)}
-                        className="flex items-center gap-2"
-                      >
-                        <Eye className="h-4 w-4" />
-                        View Details
-                      </Button>
+                      <div className="flex justify-end sm:justify-start">
+                        <Button 
+                          onClick={() => handleViewOrder(order.id)}
+                          className="flex items-center gap-2 w-full sm:w-auto"
+                        >
+                          <Eye className="h-4 w-4" />
+                          View Details
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>

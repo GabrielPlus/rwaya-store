@@ -3,30 +3,45 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle, Home, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button2';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import useCart from '@/hooks/use-cart';
 
 const PaymentSuccess = () => {
   const [sessionId, setSessionId] = useState('');
- const router = useRouter();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const removeAll = useCart((state) => state.removeAll);
 
   useEffect(() => {
-    // Generate a mock session ID
-    const generateSessionId = () => {
-      const timestamp = Date.now().toString();
-      const random = Math.random().toString(36).substring(2, 15);
-      return `${timestamp.slice(-8)}-${random.slice(0, 4)}-${random.slice(4, 8)}-${random.slice(8, 12)}-${timestamp.slice(0, 8)}${random.slice(-4)}`;
-    };
+    // Get session ID from URL params or generate one
+    const urlSessionId = searchParams.get('session');
+    const success = searchParams.get('success');
     
-    setSessionId(generateSessionId());
-  }, []);
+    if (urlSessionId) {
+      setSessionId(urlSessionId);
+    } else {
+      // Generate a mock session ID
+      const generateSessionId = () => {
+        const timestamp = Date.now().toString();
+        const random = Math.random().toString(36).substring(2, 15);
+        return `${timestamp.slice(-8)}-${random.slice(0, 4)}-${random.slice(4, 8)}-${random.slice(8, 12)}-${timestamp.slice(0, 8)}${random.slice(-4)}`;
+      };
+      setSessionId(generateSessionId());
+    }
+
+    // If this is a successful payment, clear the cart in the background
+    if (success === '1') {
+      removeAll();
+    }
+  }, [searchParams, removeAll]);
 
   const handleTrackOrder = () => {
     router.push('/orders');
   };
 
   const handleContinueShopping = () => {
-    // Navigate back to home/shop
-    console.log('Navigating to home page');
+    // Navigate back to home page
+    router.push('/');
   };
 
   return (
