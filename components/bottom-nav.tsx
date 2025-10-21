@@ -5,10 +5,8 @@ import { useRouter, usePathname } from "next/navigation";
 import { PackageCheck, ShoppingCart, User, Home, ShoppingBag, Truck } from "lucide-react";
 import useCart from "@/hooks/use-cart";
 import { UserButton, useUser } from "@clerk/nextjs";
-import { Category, Product } from "@/types";
-import Currency from "./ui/currency";
+import { Category } from "@/types";
 import { useProduct } from "@/contexts/product-context";
-import getCategories from "@/actions/get-categories";
 import Link from "next/link";
 import {
   Drawer,
@@ -27,7 +25,7 @@ const BottomNav = () => {
   const pathname = usePathname();
   const cart = useCart();
   const { currentProduct } = useProduct();
-  const { user, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     setIsMounted(true);
@@ -44,7 +42,7 @@ const BottomNav = () => {
         }
         const data = await res.json();
         setCategories(data);
-      } catch (e) {
+      } catch {
         setCategories([]);
       }
     })();
@@ -90,7 +88,7 @@ const BottomNav = () => {
       icon: ShoppingCart,
       path: "/cart",
       onClick: () => router.push("/cart"),
-      badge: cart.getTotalQuantity(),
+      badge: cart.getTotalQuantity() > 0 ? cart.getTotalQuantity() : undefined,
     },
     {
       id: "profile",
@@ -189,7 +187,7 @@ const BottomNav = () => {
                   ) : (
                     <Icon size={20} />
                   )}
-                  {item.badge > 0 && (
+                  {item.badge && item.badge > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full h-3 w-3 flex items-center justify-center z-10 text-[10px] font-bold">
                       {item.badge}
                     </span>

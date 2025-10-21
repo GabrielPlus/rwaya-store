@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/carousel";
 import { Image as ImageType } from "@/types";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface GalleryProps {
@@ -36,7 +35,7 @@ const Gallery: React.FC<GalleryProps> = ({ images }) => {
                     className="object-cover object-center"
                     onLoadingComplete={(img) => {
                       // hide skeleton on load
-                      (img as any).style.opacity = 1;
+                      (img as HTMLImageElement).style.opacity = "1";
                     }}
                   />
                 </div>
